@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "861961987029",
+    "project_id": "my-learning-app-409018",
+    "storage_bucket": "my-learning-app-409018.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861961987029:android:3112cc33326abe5363135c",
+        "android_client_info": {
+          "package_name": "com.bogdankhamelyuk.learnapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "861961987029-59r50d579qvf1dbt1quvpncegia5tef5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bogdankhamelyuk.learnapp",
+            "certificate_hash": "2d16f172105d789f9c42e573018f9e50c8bedec0"
+          }
+        },
+        {
+          "client_id": "861961987029-9t1iqcni2k35us4eah353t1s086jh9qe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkgWEeZjxIEZpXUy_72jmLoBIrs9EFVsU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "861961987029-9t1iqcni2k35us4eah353t1s086jh9qe.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "861961987029-2hsmc543en22iktlu4hp3iaasl0o3gpv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bogdankhamelyuk.learnapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
