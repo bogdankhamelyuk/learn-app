@@ -35,6 +35,7 @@
         "projectId": "834f1e74-fb38-4558-8ab1-73e5ce723af1"
       }
     },
-    "owner": "bogdankhamelyuk"
+    "owner": "bogdankhamelyuk",
+    "plugins": ["@react-native-google-signin/google-signin"]
   }
 }
