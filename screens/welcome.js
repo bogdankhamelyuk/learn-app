@@ -4,7 +4,8 @@ import {
     GoogleSigninButton,
     statusCodes,
 } from '@react-native-google-signin/google-signin';
-
+import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
+import { auth } from "../firebase.config";
 GoogleSignin.configure({
     webClientId: '861961987029-9t1iqcni2k35us4eah353t1s086jh9qe.apps.googleusercontent.com', // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
     offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
@@ -12,15 +13,18 @@ GoogleSignin.configure({
     
 });
 
-export default function WelcomeScreen(){
+export default function WelcomeScreen({ navigation }){
     
     // Somewhere in your code
     const signIn = async () => {
         try {
             await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
-            setState({ userInfo });
+            const {idToken} = await GoogleSignin.signIn(); // extract id token from signin
+            const googleCredentials = GoogleAuthProvider.credential(idToken); //create credentials from token
+            await signInWithCredential(auth,googleCredentials);
+            navigation.navigate('Main');
         } catch (error) {
+            console.log(`error: ${error}`)
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                 // user cancelled the login flow
             } else if (error.code === statusCodes.IN_PROGRESS) {
