@@ -3,17 +3,19 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import WelcomeScreen from './screens/welcome';
+import SignInScreen from './screens/signin';
 import MainScreen from './screens/main';
+import AuthLoadingScreen from './screens/authLoading';
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome" 
+      <Stack.Navigator initialRouteName="Auth" 
         screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
+        <Stack.Screen name="Auth" component={AuthLoadingScreen} />
+        <Stack.Screen name="SignIn" component={SignInScreen} />
         <Stack.Screen name="Main" component={MainScreen} />
       </Stack.Navigator>
     </NavigationContainer>
