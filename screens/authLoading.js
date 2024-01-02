@@ -15,7 +15,7 @@ const navigateTo = (navigation, path, params) => {
   );
 };
 
-export default function AuthLoadingScreen({ navigation }) {
+export default function AuthLoadingScreen({ navigation, route }) {
   const [userState, setUserState] = useState({
     user: auth.currentUser,
     isLoading: auth.currentUser === null ? true : false,

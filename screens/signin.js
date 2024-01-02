@@ -17,12 +17,15 @@ GoogleSignin.configure({
 });
 
 export default function SignInScreen({ navigation }) {
-  const navigateToMain = () => {
+  const navigateToMain = (params) => {
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
         routes: [
-          { name: "Main" }, // Replace the current state with 'Main' screen
+          {
+            name: "Main",
+            params,
+          }, // Replace the current state with 'Main' screen
         ],
       })
     );
@@ -32,10 +35,12 @@ export default function SignInScreen({ navigation }) {
   const signIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
-      const { idToken } = await GoogleSignin.signIn(); // extract id token from signin
+      const { idToken, user } = await GoogleSignin.signIn(); // extract id token from signin
       const googleCredentials = GoogleAuthProvider.credential(idToken); //create credentials from token
+      console.log(user);
       await signInWithCredential(auth, googleCredentials);
-      navigateToMain();
+      let userName = user.givenName + " " + user.familyName;
+      navigateToMain({ userName: userName });
     } catch (error) {
       console.log(`error: ${error}`);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
