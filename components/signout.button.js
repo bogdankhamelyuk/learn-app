@@ -1,8 +1,8 @@
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function SignOutButton({ onPress }) {
+export default function SignOutButton({ onPress, style }) {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
+    <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
       <Text style={styles.buttonText}>Sign Out</Text>
     </TouchableOpacity>
   );

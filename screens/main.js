@@ -16,8 +16,8 @@ export default function MainScreen({ navigation, route }) {
   };
   return (
     <View style={styles.container}>
-      <Text>Herzlich Willkommen, {userName} </Text>
-      <SignOutButton onPress={handleSignOut} />
+      <Text style={styles.title}>Herzlich Willkommen, {userName} </Text>
+      <SignOutButton style={styles.signout} onPress={handleSignOut} />
     </View>
   );
 }
@@ -25,8 +25,22 @@ export default function MainScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
+    height: "100%",
+    justifyContent: "center", // Center content vertically
+    alignItems: "center", // Center content horizontally
+  },
+  title: {
+    position: "absolute",
+    fontWeight: "bold",
+    fontSize: 30,
+    top: 0,
+    left: 0,
+    marginTop: "15%",
+    marginLeft: "5%",
+  },
+  signout: {
+    position: "absolute",
+    bottom: 0,
+    marginBottom: 30,
   },
 });
