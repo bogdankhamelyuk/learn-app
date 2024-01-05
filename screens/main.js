@@ -10,23 +10,27 @@ export default function MainScreen({ navigation, route }) {
   const [location, setLocation] = useState({
     lat: null,
     lon: null,
+    city: null,
   });
   let weatherJson; // to store json response from weather api call
-
   // are used to be displayed in template code, since useState causes infinite loop inside of useEffect.
   // Therefore you have to have separate vars which value will be copied from stateful variable `location` outside of the useEffect scope
-  let lat, lon;
+  let lat, lon, city;
 
   const API_KEY = "4ff745249fccf1c5743b31ae8c66024a";
 
   const getWeatherForecastAsync = async () => {
     let geoData = await getLocationAsync();
-    setLocation({ lat: geoData.lat, lon: geoData.lon });
-    const response = await fetch(
-      `http://api.weatherstack.com/current?access_key=${API_KEY}&query=${geoData.lat},${geoData.lon}&units=m`
-    );
-    weatherJson = await response.json();
-    console.log(weatherJson);
+    setLocation((prevData) => ({
+      ...prevData,
+      lat: geoData.lat,
+      lon: geoData.lon,
+    }));
+    // const response = await fetch(
+    //   `http://api.weatherstack.com/current?access_key=${API_KEY}&query=${geoData.lat},${geoData.lon}&units=m`
+    // );
+    // weatherJson = await response.json();
+    // console.log(weatherJson);
   };
 
   const getLocationAsync = async () => {
@@ -38,6 +42,7 @@ export default function MainScreen({ navigation, route }) {
           reject("Permission denied");
         }
         let userLocation = await Location.getCurrentPositionAsync({});
+        // console.log(userLocation);
         resolve({
           lat: userLocation.coords.latitude,
           lon: userLocation.coords.longitude,
@@ -74,6 +79,7 @@ export default function MainScreen({ navigation, route }) {
       <Text style={styles.locationInfo}>
         Your current location: {location.lat} {location.lon}
       </Text>
+      <Text style={styles.locationInfo}>Your current city: {city}</Text>
       <Text>{weatherJson}</Text>
       <SignOutButton style={styles.signout} onPress={handleSignOut} />
     </View>
