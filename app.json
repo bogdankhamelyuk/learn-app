@@ -36,6 +36,12 @@
       }
     },
     "owner": "bogdankhamelyuk",
-    "plugins": ["@react-native-google-signin/google-signin"]
+    "plugins": [
+      "@react-native-google-signin/google-signin",
+      ["expo-location",
+      {
+        "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+      }]  
+    ]
   }
 }
