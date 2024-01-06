@@ -12,10 +12,15 @@ export default function MainScreen({ navigation, route }) {
     lon: null,
     city: null,
   });
-  let weatherJson; // to store json response from weather api call
+
+  const [weather, setWeather] = useState({
+    temperature: null,
+    description: null,
+  });
+
   // are used to be displayed in template code, since useState causes infinite loop inside of useEffect.
   // Therefore you have to have separate vars which value will be copied from stateful variable `location` outside of the useEffect scope
-  let lat, lon, city;
+  let lat, lon, city, temperature, description;
 
   const API_KEY = "4ff745249fccf1c5743b31ae8c66024a";
 
@@ -26,11 +31,14 @@ export default function MainScreen({ navigation, route }) {
       lon: geoData.lon,
       city: geoData.city,
     });
-    // const response = await fetch(
-    //   `http://api.weatherstack.com/current?access_key=${API_KEY}&query=${geoData.lat},${geoData.lon}&units=m`
-    // );
-    // weatherJson = await response.json();
-    // console.log(weatherJson);
+    const response = await fetch(
+      `http://api.weatherstack.com/forecast?access_key=${API_KEY}&query=${geoData.lat},${geoData.lon}&units=m&hourly=1&interval=1`
+    );
+    let weatherJson = await response.json();
+    setWeather({
+      temperature: weatherJson.current.temperature,
+      description: weatherJson.current.weather_descriptions,
+    });
   };
 
   const getLocationAsync = async () => {
@@ -47,11 +55,11 @@ export default function MainScreen({ navigation, route }) {
           latitude,
           longitude,
         });
-        // console.log(userLocation);
+        let cityName = cityObj[0].city;
         resolve({
           lat: latitude,
           lon: longitude,
-          city: cityObj,
+          city: cityName,
         });
       } catch (error) {
         // Handle errors here
@@ -77,18 +85,22 @@ export default function MainScreen({ navigation, route }) {
   if (!errorMsg) {
     lat = location.lat;
     lon = location.lon;
-    city = location.city[0].city;
+    city = location.city;
+    temperature = weather.temperature;
+    description = weather.description;
   }
-  console.log(city);
+
   //
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Herzlich Willkommen, {userName} </Text>
       <Text style={styles.locationInfo}>
-        Your current location: {location.lat} {location.lon}
+        Your current location: {lat} {lon}
       </Text>
       <Text style={styles.locationInfo}>Your current city: {city}</Text>
-      <Text>{weatherJson}</Text>
+      <Text style={styles.locationInfo}>
+        Your current weather: {temperature} °C, {description}
+      </Text>
       <SignOutButton style={styles.signout} onPress={handleSignOut} />
     </View>
   );
@@ -98,13 +110,12 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     height: "100%",
-
     display: "flex",
     flexDirection: "column",
   },
   locationInfo: {
     position: "relative",
-    marginTop: "10%",
+    marginTop: "5%",
     marginLeft: "5%",
   },
   title: {
@@ -116,7 +127,7 @@ const styles = StyleSheet.create({
   },
   signout: {
     position: "relative",
-    marginTop: "100%",
+    marginTop: "130%",
     width: "50%",
     marginLeft: "25%",
   },
