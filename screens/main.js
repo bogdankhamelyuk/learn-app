@@ -21,11 +21,11 @@ export default function MainScreen({ navigation, route }) {
 
   const getWeatherForecastAsync = async () => {
     let geoData = await getLocationAsync();
-    setLocation((prevData) => ({
-      ...prevData,
+    setLocation({
       lat: geoData.lat,
       lon: geoData.lon,
-    }));
+      city: geoData.city,
+    });
     // const response = await fetch(
     //   `http://api.weatherstack.com/current?access_key=${API_KEY}&query=${geoData.lat},${geoData.lon}&units=m`
     // );
@@ -42,10 +42,16 @@ export default function MainScreen({ navigation, route }) {
           reject("Permission denied");
         }
         let userLocation = await Location.getCurrentPositionAsync({});
+        let { latitude, longitude } = userLocation.coords;
+        let cityObj = await Location.reverseGeocodeAsync({
+          latitude,
+          longitude,
+        });
         // console.log(userLocation);
         resolve({
-          lat: userLocation.coords.latitude,
-          lon: userLocation.coords.longitude,
+          lat: latitude,
+          lon: longitude,
+          city: cityObj,
         });
       } catch (error) {
         // Handle errors here
@@ -71,7 +77,9 @@ export default function MainScreen({ navigation, route }) {
   if (!errorMsg) {
     lat = location.lat;
     lon = location.lon;
+    city = location.city[0].city;
   }
+  console.log(city);
   //
   return (
     <View style={styles.container}>
