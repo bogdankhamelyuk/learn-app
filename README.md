@@ -4,7 +4,7 @@
 
 This is my React Native (RN) learn project.
 
-Here I am working on different aspects: _User Authentication_, _Window Navigation_, _Async Programming_, _Fetch API_, _Geocoding API_, _Weather API_ and so on.
+Here I am working on different aspects: _User Authentication_, _Window Navigation_, _Async Programming_, _Fetch API_, _Expo Location_, _Weather API_ and so on.
 
 In this `readme.md` is a rough summarization of the main steps I used to have in order to be able to use Google Authenticaton. Later on, the documentation will be extented, regarding not only Authentication proccess, but also Weather API and UI solutions.
 
