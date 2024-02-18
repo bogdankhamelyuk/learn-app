@@ -88,6 +88,6 @@ Now you can install the most important library of this project. Following steps 
 
 ### Notes
 
-Please also note, that each time you quit IDE or something else, you have to start the project not by calling `npx expo`, but by rebuilding dependencies once again. by calling command from 9. step of Installation.
+Please also note, that each time you quit IDE or something else, you have to start the project not by calling `npx expo`, but by rebuilding dependencies once again. by calling command from 7. step of Installation.
 
 It's also required to rebuild the app, when installing new libraries.

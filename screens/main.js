@@ -51,7 +51,6 @@ export default function MainScreen({ navigation, route }) {
       description: weatherJson.current.weather_descriptions,
     });
     setWeatherImg(weatherJson.current.weather_icons[0]);
-    console.log("weather img: ", weatherImg);
   };
 
   const getWeather = async (geoData) => {
@@ -130,7 +129,6 @@ export default function MainScreen({ navigation, route }) {
         city: weatherJson.location.name,
       });
       setWeatherImg(weatherJson.current.weather_icons[0]);
-      console.log(weatherJson.location.name);
       handleCityChange(""); // clean input
     } else {
       Alert.alert("No data available", "Cannot find weather forecast", [
