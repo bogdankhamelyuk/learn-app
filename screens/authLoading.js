@@ -37,6 +37,7 @@ export default function AuthLoadingScreen({ navigation, route }) {
     const unsubscribe = auth.onAuthStateChanged(onChange, onError);
     return unsubscribe; // You can show a loader here while checking auth status
   }, [navigation]);
+
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       {userState.isLoading ? (

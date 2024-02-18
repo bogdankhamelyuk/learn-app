@@ -1,8 +1,15 @@
-import { View, Text, StyleSheet } from "react-native";
-import SignOutButton from "../components/signout.button";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
+import TouchButton from "../components/touch.button";
 import { auth } from "../firebase.config";
 import * as Location from "expo-location";
 import { useState, useEffect } from "react";
+import TextPrompt from "../components/text.prompt";
 
 export default function MainScreen({ navigation, route }) {
   const { userName } = route.params || {}; // Access the user parameter from route.params
@@ -20,7 +27,7 @@ export default function MainScreen({ navigation, route }) {
 
   // are used to be displayed in template code, since useState causes infinite loop inside of useEffect.
   // Therefore you have to have separate vars which value will be copied from stateful variable `location` outside of the useEffect scope
-  let lat, lon, city, temperature, description;
+  let city, temperature, description;
 
   const API_KEY = "4ff745249fccf1c5743b31ae8c66024a";
 
@@ -31,14 +38,20 @@ export default function MainScreen({ navigation, route }) {
       lon: geoData.lon,
       city: geoData.city,
     });
-    const response = await fetch(
-      `http://api.weatherstack.com/forecast?access_key=${API_KEY}&query=${geoData.lat},${geoData.lon}&units=m&hourly=1&interval=1`
-    );
-    let weatherJson = await response.json();
+
+    let weatherJson = await getWeather(geoData.lat, geoData.lon);
+
     setWeather({
       temperature: weatherJson.current.temperature,
       description: weatherJson.current.weather_descriptions,
     });
+  };
+
+  const getWeather = async (geoData) => {
+    const response = await fetch(
+      `http://api.weatherstack.com/forecast?access_key=${API_KEY}&query=${geoData}&units=m&hourly=1&interval=1`
+    );
+    return await response.json();
   };
 
   const getLocationAsync = async () => {
@@ -89,20 +102,50 @@ export default function MainScreen({ navigation, route }) {
     temperature = weather.temperature;
     description = weather.description;
   }
+  const [inputCity, setInputCity] = useState("");
+  const [disabledButton, setButtonStatus] = useState(true);
 
-  //
+  const handleCityChange = (city) => {
+    setButtonStatus(!city.length > 0);
+    setInputCity(city);
+  };
+
+  const searchCity = async () => {
+    handleCityChange(""); // clean input
+    Keyboard.dismiss();
+    console.log(inputCity);
+    let weatherJson = await getWeather(inputCity);
+    console.log(weatherJson);
+  };
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Herzlich Willkommen, {userName} </Text>
-      <Text style={styles.locationInfo}>
-        Your current location: {lat} {lon}
-      </Text>
-      <Text style={styles.locationInfo}>Your current city: {city}</Text>
-      <Text style={styles.locationInfo}>
-        Your current weather: {temperature} °C, {description}
-      </Text>
-      <SignOutButton style={styles.signout} onPress={handleSignOut} />
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Hello, {userName} </Text>
+        <Text style={styles.locationInfo}>Your current city: {city}</Text>
+        <Text style={styles.locationInfo}>
+          Your current weather: {temperature} °C, {description}
+        </Text>
+        <View style={styles.citySearchBar}>
+          <TextPrompt
+            value={inputCity}
+            onChangeText={handleCityChange}
+            placeholder="Enter city"
+            style={styles.input}
+          />
+          <TouchButton
+            style={styles.searchButton}
+            text={"Search"}
+            onPress={searchCity}
+            disabled={disabledButton}
+          />
+        </View>
+        <TouchButton
+          style={styles.signoutButton}
+          onPress={handleSignOut}
+          text={"Sign Out"}
+        />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -125,10 +168,28 @@ const styles = StyleSheet.create({
     marginTop: "15%",
     marginLeft: "5%",
   },
-  signout: {
+  signoutButton: {
     position: "relative",
-    marginTop: "130%",
+    marginTop: "100%",
     width: "50%",
     marginLeft: "25%",
+  },
+  searchButton: {
+    width: 100,
+    marginLeft: "5%",
+  },
+  input: {
+    marginLeft: "5%",
+    borderColor: "#80848a",
+
+    borderWidth: 1,
+    borderRadius: 5,
+    width: 200,
+    height: 40,
+    paddingLeft: 10,
+  },
+  citySearchBar: {
+    marginTop: "5%",
+    flexDirection: "row",
   },
 });
