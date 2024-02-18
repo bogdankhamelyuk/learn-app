@@ -4,6 +4,8 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
+  Image,
 } from "react-native";
 import TouchButton from "../components/touch.button";
 import { auth } from "../firebase.config";
@@ -14,6 +16,9 @@ import TextPrompt from "../components/text.prompt";
 export default function MainScreen({ navigation, route }) {
   const { userName } = route.params || {}; // Access the user parameter from route.params
   const [errorMsg, setErrorMsg] = useState(null);
+  const [weatherImg, setWeatherImg] = useState("");
+  const [inputCity, setInputCity] = useState("");
+  const [disabledButton, setButtonStatus] = useState(true);
   const [location, setLocation] = useState({
     lat: null,
     lon: null,
@@ -45,6 +50,8 @@ export default function MainScreen({ navigation, route }) {
       temperature: weatherJson.current.temperature,
       description: weatherJson.current.weather_descriptions,
     });
+    setWeatherImg(weatherJson.current.weather_icons[0]);
+    console.log("weather img: ", weatherImg);
   };
 
   const getWeather = async (geoData) => {
@@ -102,8 +109,6 @@ export default function MainScreen({ navigation, route }) {
     temperature = weather.temperature;
     description = weather.description;
   }
-  const [inputCity, setInputCity] = useState("");
-  const [disabledButton, setButtonStatus] = useState(true);
 
   const handleCityChange = (city) => {
     setButtonStatus(!city.length > 0);
@@ -111,20 +116,51 @@ export default function MainScreen({ navigation, route }) {
   };
 
   const searchCity = async () => {
-    handleCityChange(""); // clean input
+    //
     Keyboard.dismiss();
-    console.log(inputCity);
     let weatherJson = await getWeather(inputCity);
-    console.log(weatherJson);
+    if (weatherJson.current) {
+      setWeather({
+        temperature: weatherJson.current.temperature,
+        description: weatherJson.current.weather_descriptions,
+      });
+      setLocation({
+        lat: weatherJson.location.lat,
+        lon: weatherJson.location.lon,
+        city: weatherJson.location.name,
+      });
+      setWeatherImg(weatherJson.current.weather_icons[0]);
+      console.log(weatherJson.location.name);
+      handleCityChange(""); // clean input
+    } else {
+      Alert.alert("No data available", "Cannot find weather forecast", [
+        {
+          text: "Done",
+        },
+      ]);
+    }
   };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
         <Text style={styles.title}>Hello, {userName} </Text>
-        <Text style={styles.locationInfo}>Your current city: {city}</Text>
-        <Text style={styles.locationInfo}>
+        {/* <Text style={styles.textInfo}>Your current city: {city}</Text>
+        <Text style={styles.textInfo}>
           Your current weather: {temperature} °C, {description}
-        </Text>
+        </Text> */}
+
+        <View style={styles.weatherContainer}>
+          <Image
+            source={{ uri: weatherImg ? weatherImg : null }}
+            style={{ width: 80, height: 80 }}
+          />
+          <View style={{ flexDirection: "column" }}>
+            <Text style={styles.textInfo}>{city}</Text>
+            <Text style={styles.textInfo}>
+              {temperature} °C, {description}
+            </Text>
+          </View>
+        </View>
         <View style={styles.citySearchBar}>
           <TextPrompt
             value={inputCity}
@@ -154,18 +190,26 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     height: "100%",
     display: "flex",
-    flexDirection: "column",
+    // flexDirection: "column",
   },
-  locationInfo: {
-    position: "relative",
+  weatherContainer: {
+    justifyContent: "flex-start",
+    alignItems: "center",
+    flexDirection: "row",
+    marginLeft: "5%",
+    marginTop: "5%",
+  },
+  textInfo: {
+    // position: "relative",
     marginTop: "5%",
     marginLeft: "5%",
+    fontSize: 20,
   },
   title: {
     position: "relative",
     fontWeight: "bold",
     fontSize: 30,
-    marginTop: "15%",
+    marginTop: "20%",
     marginLeft: "5%",
   },
   signoutButton: {
