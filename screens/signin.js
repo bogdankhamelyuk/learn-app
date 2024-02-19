@@ -37,7 +37,7 @@ export default function SignInScreen({ navigation }) {
       await GoogleSignin.hasPlayServices();
       const { idToken, user } = await GoogleSignin.signIn(); // extract id token from signin
       const googleCredentials = GoogleAuthProvider.credential(idToken); //create credentials from token
-      console.log(user);
+      console.log("user", user);
       await signInWithCredential(auth, googleCredentials);
       let userName = user.givenName + " " + user.familyName;
       navigateToMain({ userName: userName });

@@ -1,14 +1,7 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Alert,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, Alert, Image } from "react-native";
+
 import { database } from "../firebase.config";
-import { ref, set } from "firebase/database";
+import { ref, set, get, child } from "firebase/database";
 import TouchButton from "../components/touch.button";
 import { auth } from "../firebase.config";
 import * as Location from "expo-location";
@@ -18,6 +11,7 @@ import TextPrompt from "../components/text.prompt";
 export default function MainScreen({ navigation, route }) {
   const { userName } = route.params || {}; // Access the user parameter from route.params
   const userId = userName.replace(/\s/g, "");
+  const dbRef = ref(database); // database reference
   const [errorMsg, setErrorMsg] = useState(null);
   const [weatherImg, setWeatherImg] = useState("");
   const [inputCity, setInputCity] = useState("");
@@ -26,6 +20,11 @@ export default function MainScreen({ navigation, route }) {
     lat: null,
     lon: null,
     city: null,
+  });
+  const [lastCities, setLastCities] = useState({
+    oldest: "",
+    moderate: "",
+    newest: "",
   });
 
   const [weather, setWeather] = useState({
@@ -39,15 +38,25 @@ export default function MainScreen({ navigation, route }) {
 
   const API_KEY = "4ff745249fccf1c5743b31ae8c66024a";
 
-  const writeUserData = (cityName) => {
-    console.log(location.city);
-    set(ref(database, "users/" + userId), {
-      userName: userName,
-      city1: location.city,
-      city2: "",
-      city3: "",
-    });
+  const readUserData = () => {
+    // // console.log(location.city);
+    get(child(dbRef, `users/${userId}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        Alert.alert("Error", [
+          {
+            text: error,
+          },
+        ]);
+      });
   };
+
   const getWeatherForecastAsync = async () => {
     let geoData = await getLocationAsync();
     setLocation({
@@ -111,7 +120,7 @@ export default function MainScreen({ navigation, route }) {
 
   useEffect(() => {
     getWeatherForecastAsync();
-    writeUserData();
+    readUserData();
   }, []);
 
   if (!errorMsg) {
@@ -127,8 +136,12 @@ export default function MainScreen({ navigation, route }) {
     setInputCity(city);
   };
 
+  const setUserData = (data) => {
+    console.log;
+    set(ref(database, "users/" + userId), data);
+  };
+
   const searchCity = async () => {
-    //
     Keyboard.dismiss();
     let weatherJson = await getWeather(inputCity);
     if (weatherJson.current) {
@@ -142,6 +155,16 @@ export default function MainScreen({ navigation, route }) {
         city: weatherJson.location.name,
       });
       setWeatherImg(weatherJson.current.weather_icons[0]);
+      setLastCities({
+        oldest: lastCities.moderate,
+        moderate: lastCities.newest,
+        newest: weatherJson.location.name,
+      });
+      setUserData({
+        oldest: lastCities.moderate,
+        moderate: lastCities.newest,
+        newest: weatherJson.location.name,
+      });
       handleCityChange(""); // clean input
     } else {
       Alert.alert("No data available", "Cannot find weather forecast", [
@@ -156,17 +179,10 @@ export default function MainScreen({ navigation, route }) {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
         <Text style={styles.title}>Hello, {userName} </Text>
-        {/* <Text style={styles.textInfo}>Your current city: {city}</Text>
-        <Text style={styles.textInfo}>
-          Your current weather: {temperature} °C, {description}
-        </Text> */}
-
         <View style={styles.weatherContainer}>
-          <Image
-            source={{ uri: weatherImg ? weatherImg : null }}
-            style={{ width: 80, height: 80 }}
-          />
-          <View style={{ flexDirection: "column" }}>
+          <Image source={{ uri: weatherImg ? weatherImg : null }} style={{ width: 80, height: 80 }} />
+          <View style={{ flexDirection: "column", maxHeight: 100 }}>
+            <Text style={[styles.textInfo, { fontSize: 25, fontWeight: "500" }]}>Your current location: </Text>
             <Text style={styles.textInfo}>{city}</Text>
             <Text style={styles.textInfo}>
               {temperature} °C, {description}
@@ -174,24 +190,14 @@ export default function MainScreen({ navigation, route }) {
           </View>
         </View>
         <View style={styles.citySearchBar}>
-          <TextPrompt
-            value={inputCity}
-            onChangeText={handleCityChange}
-            placeholder="Enter city"
-            style={styles.input}
-          />
-          <TouchButton
-            style={styles.searchButton}
-            text={"Search"}
-            onPress={searchCity}
-            disabled={disabledButton}
-          />
+          <TextPrompt value={inputCity} onChangeText={handleCityChange} placeholder="Enter city" style={styles.input} />
+          <TouchButton style={styles.searchButton} text={"Search"} onPress={searchCity} disabled={disabledButton} />
         </View>
-        <TouchButton
-          style={styles.signoutButton}
-          onPress={handleSignOut}
-          text={"Sign Out"}
-        />
+        <Text style={[styles.textInfo, { marginTop: 10 }, { fontWeight: "500" }]}>Last viewed cities:</Text>
+        <Text style={[styles.textInfo, { marginTop: 10 }]}>
+          {`${lastCities.newest}\n${lastCities.moderate}\n${lastCities.oldest}`}
+        </Text>
+        <TouchButton style={styles.signoutButton} onPress={handleSignOut} text={"Sign Out"} />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -213,7 +219,7 @@ const styles = StyleSheet.create({
   },
   textInfo: {
     // position: "relative",
-    marginTop: "5%",
+
     marginLeft: "5%",
     fontSize: 20,
   },
