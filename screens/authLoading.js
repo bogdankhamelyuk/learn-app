@@ -1,7 +1,6 @@
 import { auth } from "../firebase.config";
 import { useEffect, useState } from "react";
 import { CommonActions } from "@react-navigation/native";
-import { OAuthCredential } from "firebase/auth";
 import { ActivityIndicator, View } from "react-native";
 
 const navigateTo = (navigation, path, params) => {

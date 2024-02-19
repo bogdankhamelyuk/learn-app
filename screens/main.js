@@ -7,6 +7,8 @@ import {
   Alert,
   Image,
 } from "react-native";
+import { database } from "../firebase.config";
+import { ref, set } from "firebase/database";
 import TouchButton from "../components/touch.button";
 import { auth } from "../firebase.config";
 import * as Location from "expo-location";
@@ -15,6 +17,7 @@ import TextPrompt from "../components/text.prompt";
 
 export default function MainScreen({ navigation, route }) {
   const { userName } = route.params || {}; // Access the user parameter from route.params
+  const userId = userName.replace(/\s/g, "");
   const [errorMsg, setErrorMsg] = useState(null);
   const [weatherImg, setWeatherImg] = useState("");
   const [inputCity, setInputCity] = useState("");
@@ -36,6 +39,15 @@ export default function MainScreen({ navigation, route }) {
 
   const API_KEY = "4ff745249fccf1c5743b31ae8c66024a";
 
+  const writeUserData = (cityName) => {
+    console.log(location.city);
+    set(ref(database, "users/" + userId), {
+      userName: userName,
+      city1: location.city,
+      city2: "",
+      city3: "",
+    });
+  };
   const getWeatherForecastAsync = async () => {
     let geoData = await getLocationAsync();
     setLocation({
@@ -99,6 +111,7 @@ export default function MainScreen({ navigation, route }) {
 
   useEffect(() => {
     getWeatherForecastAsync();
+    writeUserData();
   }, []);
 
   if (!errorMsg) {
@@ -138,6 +151,7 @@ export default function MainScreen({ navigation, route }) {
       ]);
     }
   };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
