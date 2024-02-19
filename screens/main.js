@@ -43,7 +43,13 @@ export default function MainScreen({ navigation, route }) {
     get(child(dbRef, `users/${userId}`))
       .then((snapshot) => {
         if (snapshot.exists()) {
-          console.log(snapshot.val());
+          let output = snapshot.val();
+          // console.log();
+          setLastCities({
+            moderate: output.moderate,
+            oldest: output.oldest,
+            newest: output.newest,
+          });
         } else {
           console.log("No data available");
         }
