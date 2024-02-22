@@ -1,22 +1,22 @@
 import { View, StyleSheet, Text } from "react-native";
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
+import { GoogleSignin, GoogleSigninButton, statusCodes } from "@react-native-google-signin/google-signin";
 import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import { auth } from "../firebase.config";
+import { useState } from "react";
 import { CommonActions } from "@react-navigation/native";
-
+import TextPrompt from "../components/text.prompt";
 GoogleSignin.configure({
-  webClientId:
-    "861961987029-9t1iqcni2k35us4eah353t1s086jh9qe.apps.googleusercontent.com", // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
+  webClientId: "861961987029-9t1iqcni2k35us4eah353t1s086jh9qe.apps.googleusercontent.com", // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
   offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-  iosClientId:
-    "861961987029-2hsmc543en22iktlu4hp3iaasl0o3gpv.apps.googleusercontent.com", // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+  iosClientId: "861961987029-2hsmc543en22iktlu4hp3iaasl0o3gpv.apps.googleusercontent.com", // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 });
 
 export default function SignInScreen({ navigation }) {
+  const [email, setEmail] = useState("");
+  const handleEmailChange = (userInput) => {
+    // setButtonStatus(!city.length > 0);
+    setEmail(userInput);
+  };
   const navigateToMain = (params) => {
     navigation.dispatch(
       CommonActions.reset({
@@ -56,14 +56,9 @@ export default function SignInScreen({ navigation }) {
   };
   return (
     <View style={styles.container}>
-      <View>
-        <Text style={styles.text}>Welcome to the Learn App</Text>
-        <GoogleSigninButton
-          color={GoogleSigninButton.Color.Dark}
-          size={GoogleSigninButton.Size.Wide}
-          onPress={signIn}
-        />
-      </View>
+      <Text style={styles.text}>Welcome to the Learn App</Text>
+      <TextPrompt value={email} onChangeText={handleEmailChange} placeholder="Email" style={styles.input} />
+      <GoogleSigninButton color={GoogleSigninButton.Color.Dark} size={GoogleSigninButton.Size.Icon} onPress={signIn} />
     </View>
   );
 }
@@ -79,5 +74,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
+  },
+
+  input: {
+    borderColor: "#80848a",
+    borderWidth: 1,
+    borderRadius: 5,
+    width: "75%",
+    height: 40,
+    paddingLeft: 10,
   },
 });
