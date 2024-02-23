@@ -1,5 +1,8 @@
 # React Native learn project
 
+
+![Working example](./screenrecording.gif )
+
 ## About
 
 This is my React Native (RN) learn project.
