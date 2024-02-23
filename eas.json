@@ -10,7 +10,9 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "env": { "ANDROID_HOME": "~/Library/Android/sdk" }
+    }
   },
   "submit": {
     "production": {}

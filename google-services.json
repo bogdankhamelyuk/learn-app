@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "861961987029",
+    "firebase_url": "https://my-learning-app-409018-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "my-learning-app-409018",
     "storage_bucket": "my-learning-app-409018.appspot.com"
   },
@@ -14,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "861961987029-59r50d579qvf1dbt1quvpncegia5tef5.apps.googleusercontent.com",
+          "client_id": "861961987029-h5kppbqr1q8t5c7lon3e4sqevlf9tbds.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.bogdankhamelyuk.learnapp",
-            "certificate_hash": "2d16f172105d789f9c42e573018f9e50c8bedec0"
+            "certificate_hash": "36302104855f44110be44d03296db35c805304d5"
           }
         },
         {
@@ -28,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAkgWEeZjxIEZpXUy_72jmLoBIrs9EFVsU"
+          "current_key": "AIzaSyC-usP_9UDKaXli9S9CkKZ1s-h_w8u9v0A"
         }
       ],
       "services": {
