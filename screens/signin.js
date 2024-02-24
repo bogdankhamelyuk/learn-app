@@ -57,7 +57,7 @@ export default function SignInScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome to the Learn App</Text>
-      <TextPrompt value={email} onChangeText={handleEmailChange} placeholder="Email" style={styles.input} />
+      {/* <TextPrompt value={email} onChangeText={handleEmailChange} placeholder="Email" style={styles.input} /> */}
       <GoogleSigninButton color={GoogleSigninButton.Color.Dark} size={GoogleSigninButton.Size.Icon} onPress={signIn} />
     </View>
   );
